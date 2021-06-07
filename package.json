@@ -1,0 +1,105 @@
+{
+  "name": "vscode-kubernetes-dashboard",
+  "displayName": "Kubernetes Dashboard",
+  "icon": "images/icon.png",
+  "description": "Install and Launch Kubernetes Dashboard.",
+  "version": "1.0.6",
+  "publisher": "sandipchitale",
+  "engines": {
+    "vscode": "^1.33.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "url": "https://github.com/sandipchitale/vscode-kubernetes-dashboard"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+			"kubernetesView": [
+				{
+					"type": "webview",
+					"id": "vscode-kubernetes-dashboard.steps",
+					"name": "Kubernetes Dashboard Steps"
+				}
+			]
+		},
+    "commands": [
+      {
+        "command": "vscode-kubernetes-dashboard.create-kind-cluster",
+        "title": "Create Kind cluster",
+        "category": "Kubernetes Dashboard: Kind"
+      },
+      {
+        "command": "vscode-kubernetes-dashboard.prime-cluster",
+        "title": "Prime cluster",
+        "category": "Kubernetes Dashboard"
+      },
+      {
+        "command": "vscode-kubernetes-dashboard.install-kubernetes-dashboard-helm-chart",
+        "title": "Install Kubernetes Dashboard Helm chart",
+        "category": "Kubernetes Dashboard: Helm"
+      },
+      {
+        "command": "vscode-kubernetes-dashboard.launch",
+        "title": "Launch",
+        "category": "Kubernetes Dashboard"
+      },
+      {
+        "command": "vscode-kubernetes-dashboard.port-forward",
+        "title": "Port forward",
+        "category": "Kubernetes Dashboard"
+      },
+      {
+        "command": "vscode-kubernetes-dashboard.get-token",
+        "title": "Get token",
+        "category": "Kubernetes Dashboard"
+      },
+      {
+        "command": "vscode-kubernetes-dashboard.uninstall-kubernetes-dashboard-helm-chart",
+        "title": "Uninstall Kubernetes Dashboard Helm chart",
+        "category": "Kubernetes Dashboard: Helm"
+      },
+      {
+          "command": "vscode-kubernetes-dashboard.pod.show",
+          "title": "Show in Kubernetes Dashboard",
+          "category": "Kubernetes Dashboard"
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "vscode-kubernetes-dashboard.pod.show",
+          "when": "view == extension.vsKubernetesExplorer && viewItem =~ /vsKubernetes\\.resource\\..+/i"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint . --ext .ts,.tsx",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.10",
+    "@types/vscode": "^1.33.0",
+    "@typescript-eslint/eslint-plugin": "^3.0.2",
+    "@typescript-eslint/parser": "^3.0.2",
+    "eslint": "^7.1.0",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "chrome-launcher": "^0.13.4",
+    "chrome-remote-interface": "^0.29.0",
+    "vscode-kubernetes-tools-api": "^1.0.0"
+  },
+  "extensionDependencies": [
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "ms-kubernetes-tools.kind-vscode"
+  ]
+}
