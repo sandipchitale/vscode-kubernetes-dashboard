@@ -1,0 +1,12 @@
+body {
+	background-color: transparent;
+}
+
+.steps {
+	list-style: none;
+	padding: 0;
+}
+
+.step {
+	margin-bottom: 4px;
+}
