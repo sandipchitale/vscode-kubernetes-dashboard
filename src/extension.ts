@@ -196,6 +196,7 @@ function portForward(kubectl: k8s.API<k8s.KubectlV1>, delay: number) {
                   if (code === 0) {
                     resolve(code);
                   } else {
+                    vscode.window.showErrorMessage(`Port forward exited with code ${code}`);
                     reject(code);
                   }
                 });
@@ -213,7 +214,7 @@ function portForward(kubectl: k8s.API<k8s.KubectlV1>, delay: number) {
 async function launchKubernetesDashboard(context: vscode.ExtensionContext, kubectl: k8s.API<k8s.KubectlV1>) {
   getToken(context, kubectl);
   chrome = await chrome_launcher.launch({
-    chromeFlags: ['--app=https://127.0.0.1:8443/#/overview?namespace=default', '--window-size=1400,900', '--allow-insecure-localhost']
+    chromeFlags: ['--app=https://127.0.0.1:8443/', '--window-size=1400,900', '--allow-insecure-localhost']
   });
   chromeRemoteInterfaceClient = await chromeRemoteInterface({
     port: chrome.port
@@ -267,7 +268,7 @@ async function getToken(context: vscode.ExtensionContext, kubectl: k8s.API<k8s.K
 async function ensureVersions(kubectl: k8s.API<k8s.KubectlV1>) {
 
   if (kubectl.available) {
-    const versionsOutput = await kubectl.api.invokeCommand('version -o=json --short');
+    const versionsOutput = await kubectl.api.invokeCommand('version -o=json');
     if (versionsOutput && versionsOutput?.code === 0) {
       return JSON.parse(versionsOutput.stdout);
     }
