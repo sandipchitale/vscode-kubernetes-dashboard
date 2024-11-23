@@ -151,63 +151,60 @@ function installKubernetesDashboardHelmChart(context: vscode.ExtensionContext, k
 
 function portForward(kubectl: k8s.API<k8s.KubectlV1>, delay: number) {
   if (kubectl.available) {
-    kubectl.api.invokeCommand(`get pods -o jsonpath={.items[0].metadata.name} -n kubernetes-dashboard`).then((value) => {
-      if (value) {
-        if (value.code === 0) {
-          vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: `Forwarding port 8443 in ${delay} seconds.`
-          }, (progress, token) => {
-            return new Promise((resolve, reject) => {
-              setTimeout(() => {
-                let pf;
-                if (process.platform === 'win32') {
-                  pf = child_process.spawn(
-                    'cmd',
-                    [
-                      '/C'
-                      ,'start'
-                      ,'kubectl'
-                      ,'port-forward'
-                      ,`${value.stdout.replace('\n', '')}`
-                      ,'8443:8443'
-                      ,'-n'
-                      ,'kubernetes-dashboard'
-                    ]
-                  );
-                } else {
-                  pf = child_process.spawn(
-                    'kubectl',
-                    [
-                      'port-forward'
-                      ,`${value.stdout.replace('\n', '')}`
-                      ,'8443:8443'
-                      ,'-n'
-                      ,'kubernetes-dashboard'
-                    ]
-                  );
-                }
+    vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: `Forwarding port 8443 in ${delay} seconds.`
+    }, (progress, token) => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          let pf;
+          if (process.platform === 'win32') {
+            pf = child_process.spawn(
+              'cmd',
+              [
+                '/C'
+                ,'start'
+                ,'kubectl'
+                ,'port-forward'
+                ,'service/kubernetes-dashboard-kong-proxy'
+                ,'8443:443'
+                ,'-n'
+                ,'kubernetes-dashboard'
+              ],
+              {
+                detached: true
+              }
+            );
+          } else {
+            pf = child_process.spawn(
+              'kubectl',
+              [
+                'port-forward'
+                ,'service/kubernetes-dashboard-kong-proxy'
+                ,'8443:443'
+                ,'-n'
+                ,'kubernetes-dashboard'
+              ],
+              {
+                detached: true
+              }
+            );
+          }
 
-                pf.on('stderr', (data) => {
-                  vscode.window.showErrorMessage(data);
-                });
-
-                pf.on('exit', (code) => {
-                  if (code === 0) {
-                    resolve(code);
-                  } else {
-                    vscode.window.showErrorMessage(`Port forward exited with code ${code}`);
-                    reject(code);
-                  }
-                });
-              }, (delay*1000));
-            });
+          pf.on('stderr', (data) => {
+            vscode.window.showErrorMessage(data);
           });
-        } else {
-          vscode.window.showErrorMessage(value.stderr, { modal: true });
-        }
-      }
-    });
+
+          pf.on('exit', (code) => {
+            if (code !== 0) {
+              vscode.window.showErrorMessage(`Port forward exited with code ${code}`);
+              reject(code);
+            }
+          });
+          resolve(code);
+        }, (delay * 1000));
+      });
+    };
   }
 }
 
@@ -378,7 +375,6 @@ class KubernetesDashboardStepsViewProvider implements vscode.WebviewViewProvider
 </head>
 <body>
   <ul class="steps">
-    <li class="step"><div style="display: flex;"><button id="ckc"   type="button">&#5125;</button> Create Kind cluster (Optional)</div></li>
     <li class="step"><div style="display: flex;"><button id="pm"    type="button">&#5125;</button> Prime cluster</div></li>
     <li class="step"><div style="display: flex;"><button id="ikdhc" type="button">&#5125;</button> Install Kubernetes Dashboard Helm chart</div></li>
     <li class="step"><div style="display: flex;"><button id="pf"    type="button">&#5125;</button> Port forward</div></li>

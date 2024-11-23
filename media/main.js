@@ -5,7 +5,6 @@
     const vscode = acquireVsCodeApi();
 
     const idToCommandMap = {
-        'ckc':   'vscode-kubernetes-dashboard.create-kind-cluster',
         'pm':    'vscode-kubernetes-dashboard.prime-cluster',
         'ikdhc': 'vscode-kubernetes-dashboard.install-kubernetes-dashboard-helm-chart',
         'pf':    'vscode-kubernetes-dashboard.port-forward',
@@ -18,7 +17,7 @@
         vscode.postMessage({ command: idToCommandMap[event.target.id] });
     }
 
-    document.querySelector('#ckc').addEventListener('click', postMessage);
+    // document.querySelector('#ckc').addEventistener('click', postMessage);
     document.querySelector('#pm').addEventListener('click', postMessage);
     document.querySelector('#ikdhc').addEventListener('click', postMessage);
     document.querySelector('#pf').addEventListener('click', postMessage);
