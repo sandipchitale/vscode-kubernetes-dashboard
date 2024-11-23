@@ -10,8 +10,6 @@ This extension supports following commands:
 
 | Step  | Command                                     | Category                    | Description |
 |-------|---------------------------------------------|-----------------------------|-------------|
-|    0  | _Create Kind cluster_                       | Kubernetes Dashboard: Kind: | Create a 3 node Kind cluster. This step is _**optional**_. |
-|       |||
 |    1  | Prime cluster                               | Kubernetes Dashboard:       | Prime the current cluster for deploying the Kubernetes Dashboard Helm chart |
 |    2  | Install Kubernetes Dashboard Helm chart     | Kubernetes Dashboard: Helm: | Install Kubernetes Dashboard Helm chart |
 |    3  | Port forward                                | Kubernetes Dashboard:       | Forward port 8443 (only supported on MS Windows) |
@@ -59,16 +57,4 @@ metadata:
   namespace: kubernetes-dashboard
   annotations:
     kubernetes.io/service-account.name: admin-user
-```
-
-The _**Create Kind cluster**_ command create the Kind cluster using the following configuration:
-
-```
-# three node (two workers) cluster config
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-- role: worker
-- role: worker
 ```

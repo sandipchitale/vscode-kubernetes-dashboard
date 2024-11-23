@@ -201,10 +201,10 @@ function portForward(kubectl: k8s.API<k8s.KubectlV1>, delay: number) {
               reject(code);
             }
           });
-          resolve(code);
+          resolve(0);
         }, (delay * 1000));
       });
-    };
+    });
   }
 }
 
